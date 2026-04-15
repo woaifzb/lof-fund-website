@@ -1,10 +1,8 @@
-// LOF基金数据处理脚本
+// LOF 基金数据处理脚本 - 文武的天兵
 class LOFFundTracker {
     constructor() {
         this.funds = [];
         this.filteredFunds = [];
-        this.currentPage = 1;
-        this.itemsPerPage = 50;
         this.sortColumn = null;
         this.sortDirection = 'asc';
         
@@ -15,47 +13,22 @@ class LOFFundTracker {
         this.loadFundData();
         this.bindEvents();
         this.renderTable();
-    }
-    
-    loadFundData() {
-        this.funds = [
-            {code: "161005", name: "富国天惠LOF", premiumRate: "0.25%", dailyChange: "+1.23%", limitAmount: "100万", subscriptionStatus: "open"},
-            {code: "160607", name: "鹏华动力增长LOF", premiumRate: "-0.15%", dailyChange: "-0.87%", limitAmount: "无限额", subscriptionStatus: "open"},
-            {code: "162204", name: "泰达荷银精选LOF", premiumRate: "0.42%", dailyChange: "+2.15%", limitAmount: "50万", subscriptionStatus: "open"},
-            {code: "160119", name: "南方积配LOF", premiumRate: "-0.08%", dailyChange: "+0.34%", limitAmount: "无限额", subscriptionStatus: "open"},
-            {code: "160213", name: "国泰纳斯达克100LOF", premiumRate: "1.25%", dailyChange: "+3.45%", limitAmount: "20万", subscriptionStatus: "open"},
-            {code: "161116", name: "易方达黄金主题LOF", premiumRate: "0.67%", dailyChange: "-1.23%", limitAmount: "无限额", subscriptionStatus: "paused"},
-            {code: "160716", name: "嘉实基本面50LOF", premiumRate: "-0.32%", dailyChange: "+0.78%", limitAmount: "100万", subscriptionStatus: "open"},
-            {code: "163407", name: "兴全合润LOF", premiumRate: "0.18%", dailyChange: "+1.56%", limitAmount: "无限额", subscriptionStatus: "open"},
-            {code: "162711", name: "广发聚瑞LOF", premiumRate: "-0.21%", dailyChange: "-0.45%", limitAmount: "50万", subscriptionStatus: "open"},
-            {code: "161714", name: "招商深证100LOF", premiumRate: "0.09%", dailyChange: "+0.67%", limitAmount: "无限额", subscriptionStatus: "open"},
-            {code: "161224", name: "国投瑞银瑞源LOF", premiumRate: "0.33%", dailyChange: "+0.89%", limitAmount: "无限额", subscriptionStatus: "open"},
-            {code: "161226", name: "国投瑞银瑞和沪深300LOF", premiumRate: "-0.12%", dailyChange: "+1.23%", limitAmount: "50万", subscriptionStatus: "paused"},
-            {code: "160706", name: "嘉实300LOF", premiumRate: "0.15%", dailyChange: "+0.45%", limitAmount: "无限额", subscriptionStatus: "open"},
-            {code: "162207", name: "泰达宏利效率LOF", premiumRate: "-0.25%", dailyChange: "-1.12%", limitAmount: "30万", subscriptionStatus: "open"},
-            {code: "163402", name: "兴全趋势LOF", premiumRate: "0.28%", dailyChange: "+2.34%", limitAmount: "无限额", subscriptionStatus: "open"},
-            {code: "160806", name: "长盛同智LOF", premiumRate: "0.19%", dailyChange: "-0.78%", limitAmount: "20万", subscriptionStatus: "open"},
-            {code: "161606", name: "融通巨潮100LOF", premiumRate: "-0.05%", dailyChange: "+0.23%", limitAmount: "无限额", subscriptionStatus: "open"},
-            {code: "162209", name: "泰达宏利市值LOF", premiumRate: "0.41%", dailyChange: "+1.67%", limitAmount: "100万", subscriptionStatus: "open"},
-            {code: "160917", name: "大成深证成长40LOF", premiumRate: "-0.18%", dailyChange: "-0.56%", limitAmount: "无限额", subscriptionStatus: "open"},
-            {code: "161017", name: "富国500LOF", premiumRate: "0.22%", dailyChange: "+0.98%", limitAmount: "50万", subscriptionStatus: "open"},
-            {code: "160217", name: "国泰国证食品饮料LOF", premiumRate: "1.45%", dailyChange: "+4.23%", limitAmount: "10万", subscriptionStatus: "open"},
-            {code: "161119", name: "易方达中证银行LOF", premiumRate: "-0.35%", dailyChange: "-1.45%", limitAmount: "无限额", subscriptionStatus: "paused"},
-            {code: "160717", name: "嘉实恒生中国企业LOF", premiumRate: "0.87%", dailyChange: "+2.78%", limitAmount: "20万", subscriptionStatus: "open"},
-            {code: "162211", name: "泰达宏利中证500LOF", premiumRate: "0.12%", dailyChange: "+0.67%", limitAmount: "无限额", subscriptionStatus: "open"},
-            {code: "163808", name: "中银中小盘LOF", premiumRate: "-0.28%", dailyChange: "-1.34%", limitAmount: "30万", subscriptionStatus: "open"},
-            {code: "161713", name: "招商大盘蓝筹LOF", premiumRate: "0.16%", dailyChange: "+0.89%", limitAmount: "无限额", subscriptionStatus: "open"},
-            {code: "160610", name: "鹏华资源LOF", premiumRate: "2.34%", dailyChange: "+5.67%", limitAmount: "5万", subscriptionStatus: "paused"},
-            {code: "162213", name: "泰达宏利逆向策略LOF", premiumRate: "-0.19%", dailyChange: "-0.87%", limitAmount: "无限额", subscriptionStatus: "open"},
-            {code: "161015", name: "富国天成红利LOF", premiumRate: "0.31%", dailyChange: "+1.45%", limitAmount: "100万", subscriptionStatus: "open"},
-            {code: "160616", name: "鹏华丰润债券LOF", premiumRate: "0.05%", dailyChange: "+0.12%", limitAmount: "无限额", subscriptionStatus: "open"}
-        ];
-        
-        this.filteredFunds = [...this.funds];
         this.updateLastUpdate();
     }
     
+    loadFundData() {
+        // 从全局变量加载数据
+        if (typeof LOF_FUND_DATA !== 'undefined') {
+            this.funds = LOF_FUND_DATA;
+        } else {
+            console.warn('未找到 LOF_FUND_DATA');
+            this.funds = [];
+        }
+        this.filteredFunds = [...this.funds];
+    }
+    
     bindEvents() {
+        // 搜索框事件
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
@@ -63,9 +36,11 @@ class LOFFundTracker {
             });
         }
 
-        // 添加排序事件监听
+        // 表头排序事件
         const headers = document.querySelectorAll('#fundTable th');
         headers.forEach((header, index) => {
+            header.style.cursor = 'pointer';
+            header.title = '点击排序';
             header.addEventListener('click', () => {
                 this.sortTable(index);
             });
@@ -89,38 +64,31 @@ class LOFFundTracker {
 
         // 设置当前排序列的指示器
         const currentHeader = headers[columnIndex];
-        currentHeader.textContent += this.sortDirection === 'asc' ? ' ▲' : ' ▼';
+        currentHeader.textContent += this.sortDirection === 'asc' ? ' ▼' : ' ▲';
 
         // 执行排序
         this.filteredFunds.sort((a, b) => {
             let valA, valB;
 
             switch(columnIndex) {
-                case 0: // 基金代码
-                    valA = a.code;
-                    valB = b.code;
+                case 0: // 基金信息（代码 + 名称）
+                    valA = a.code + a.name;
+                    valB = b.code + b.name;
                     break;
-                case 1: // 基金名称
-                    valA = a.name.toLowerCase();
-                    valB = b.name.toLowerCase();
+                case 1: // 溢价率
+                    valA = parseFloat(a.premiumRate.replace('%', '').replace('+', '')) || 0;
+                    valB = parseFloat(b.premiumRate.replace('%', '').replace('+', '')) || 0;
+                    // 处理负号
+                    if (a.premiumRate.includes('-')) valA = -Math.abs(valA);
+                    if (b.premiumRate.includes('-')) valB = -Math.abs(valB);
                     break;
-                case 2: // 实时溢价率
-                    valA = parseFloat(a.premiumRate.replace('%', ''));
-                    valB = parseFloat(b.premiumRate.replace('%', ''));
-                    break;
-                case 3: // 当日涨跌幅
-                    valA = parseFloat(a.dailyChange.replace('%', '').replace('+', ''));
-                    valB = parseFloat(b.dailyChange.replace('%', '').replace('+', ''));
-                    break;
-                case 4: // 限购数量
-                    // 暂停申购的基金排在最后
-                    if (a.subscriptionStatus === 'paused' && b.subscriptionStatus !== 'paused') return 1;
-                    if (a.subscriptionStatus !== 'paused' && b.subscriptionStatus === 'paused') return -1;
+                case 2: // 限购值
+                    // "无限额"排最后
+                    if (a.limitAmount === '无限额' && b.limitAmount !== '无限额') return 1;
+                    if (a.limitAmount !== '无限额' && b.limitAmount === '无限额') return -1;
                     
-                    if (a.subscriptionStatus === 'paused') return 0;
+                    if (a.limitAmount === '无限额') return 0;
                     
-                    if (a.limitAmount === '无限额') return 1;
-                    if (b.limitAmount === '无限额') return -1;
                     valA = parseFloat(a.limitAmount.replace('万', ''));
                     valB = parseFloat(b.limitAmount.replace('万', ''));
                     break;
@@ -128,19 +96,16 @@ class LOFFundTracker {
                     return 0;
             }
 
-            // 处理NaN情况
+            // 处理 NaN 情况
             if (isNaN(valA) && !isNaN(valB)) return 1;
             if (!isNaN(valA) && isNaN(valB)) return -1;
             if (isNaN(valA) && isNaN(valB)) return 0;
 
-            if (this.sortDirection === 'asc') {
-                return valA > valB ? 1 : -1;
-            } else {
-                return valA < valB ? 1 : -1;
-            }
+            return this.sortDirection === 'asc' ? 
+                (valA > valB ? 1 : -1) : 
+                (valA < valB ? 1 : -1);
         });
 
-        this.currentPage = 1;
         this.renderTable();
     }
     
@@ -154,7 +119,6 @@ class LOFFundTracker {
                 fund.name.toLowerCase().includes(term)
             );
         }
-        this.currentPage = 1;
         this.renderTable();
     }
     
@@ -162,50 +126,34 @@ class LOFFundTracker {
         const tbody = document.getElementById('fundTableBody');
         if (!tbody) return;
         
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        const endIndex = Math.min(startIndex + this.itemsPerPage, this.filteredFunds.length);
-        const pageFunds = this.filteredFunds.slice(startIndex, endIndex);
-        
         tbody.innerHTML = '';
-        pageFunds.forEach(fund => {
+        
+        if (this.filteredFunds.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3">暂无数据</td></tr>';
+            return;
+        }
+        
+        // 显示所有基金（不分页）
+        this.filteredFunds.forEach(fund => {
             const row = document.createElement('tr');
             
-            // 基金代码
-            const codeCell = document.createElement('td');
-            codeCell.textContent = fund.code;
-            row.appendChild(codeCell);
-            
-            // 基金名称
-            const nameCell = document.createElement('td');
-            nameCell.textContent = fund.name;
-            row.appendChild(nameCell);
+            // 基金信息（代码 + 名称）
+            const infoCell = document.createElement('td');
+            infoCell.className = 'fund-info';
+            infoCell.innerHTML = `<strong>${fund.code}</strong><br>${fund.name}`;
+            row.appendChild(infoCell);
             
             // 溢价率
             const premiumCell = document.createElement('td');
             premiumCell.textContent = fund.premiumRate;
-            if (fund.premiumRate.startsWith('-')) {
-                premiumCell.className = 'negative';
-            } else if (fund.premiumRate !== '0.00%') {
-                premiumCell.className = 'positive';
-            }
+            premiumCell.className = this.getPremiumClass(fund.premiumRate);
             row.appendChild(premiumCell);
             
-            // 涨跌幅
-            const changeCell = document.createElement('td');
-            changeCell.textContent = fund.dailyChange;
-            if (fund.dailyChange.startsWith('-')) {
-                changeCell.className = 'negative';
-            } else if (fund.dailyChange !== '+0.00%') {
-                changeCell.className = 'positive';
-            }
-            row.appendChild(changeCell);
-            
-            // 限购数量 + 暂停申购标记
+            // 限购值
             const limitCell = document.createElement('td');
             if (fund.subscriptionStatus === 'paused') {
-                limitCell.textContent = '暂停';
+                limitCell.textContent = '暂停申购';
                 limitCell.className = 'subscription-paused';
-                // 添加悬停提示
                 limitCell.title = '该基金当前暂停申购';
             } else {
                 limitCell.textContent = fund.limitAmount;
@@ -218,36 +166,29 @@ class LOFFundTracker {
             tbody.appendChild(row);
         });
         
-        this.updatePagination();
+        // 更新基金总数显示
+        const totalCount = document.getElementById('totalCount');
+        if (totalCount) {
+            totalCount.textContent = `共 ${this.filteredFunds.length} 只基金`;
+        }
     }
     
-    updatePagination() {
-        const totalPages = Math.ceil(this.filteredFunds.length / this.itemsPerPage);
-        document.getElementById('pageInfo').textContent = `第 ${this.currentPage} 页，共 ${totalPages} 页`;
-        
-        document.getElementById('prevBtn').disabled = this.currentPage <= 1;
-        document.getElementById('nextBtn').disabled = this.currentPage >= totalPages;
+    getPremiumClass(premiumRate) {
+        if (premiumRate === 'N/A') return '';
+        const value = parseFloat(premiumRate.replace('%', '').replace('+', ''));
+        if (premiumRate.includes('-')) return 'negative';
+        if (value > 0.5) return 'high-premium';
+        if (value > 0) return 'positive';
+        return '';
     }
     
     updateLastUpdate() {
         const now = new Date();
         const timeString = now.toLocaleString('zh-CN');
-        document.getElementById('lastUpdate').textContent = `最后更新: ${timeString}`;
-    }
-    
-    changePage(direction) {
-        const totalPages = Math.ceil(this.filteredFunds.length / this.itemsPerPage);
-        this.currentPage += direction;
-        
-        if (this.currentPage < 1) this.currentPage = 1;
-        if (this.currentPage > totalPages) this.currentPage = totalPages;
-        
-        this.renderTable();
-    }
-    
-    refreshData() {
-        this.loadFundData();
-        this.renderTable();
+        const element = document.getElementById('lastUpdate');
+        if (element) {
+            element.textContent = `最后更新：${timeString}`;
+        }
     }
 }
 

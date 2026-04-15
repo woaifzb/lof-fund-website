@@ -3,44 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOF基金实时行情 - 文武的天兵</title>
+    <title>LOF 基金实时行情</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>LOF基金实时行情</h1>
-            <p>基金代码 | 基金名称 | 实时溢价率 | 当日涨跌幅 | 限购数量</p>
+            <h1>LOF 基金实时行情</h1>
         </header>
         
         <div class="controls">
             <input type="text" id="searchInput" placeholder="搜索基金代码或名称...">
-            <button onclick="refreshData()">刷新数据</button>
+            <span id="totalCount">共 0 只基金</span>
             <span id="lastUpdate"></span>
         </div>
         
-        <div class="table-container">
-            <table id="fundTable">
-                <thead>
-                    <tr>
-                        <th onclick="sortTable(0)">基金代码 ▼</th>
-                        <th onclick="sortTable(1)">基金名称 ▼</th>
-                        <th onclick="sortTable(2)">实时溢价率 ▼</th>
-                        <th onclick="sortTable(3)">当日涨跌幅 ▼</th>
-                        <th onclick="sortTable(4)">限购数量 ▼</th>
-                    </tr>
-                </thead>
-                <tbody id="fundTableBody">
-                    <!-- 数据将通过JavaScript动态填充 -->
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="pagination">
-            <button id="prevBtn" onclick="changePage(-1)">上一页</button>
-            <span id="pageInfo">第 1 页</span>
-            <button id="nextBtn" onclick="changePage(1)">下一页</button>
-        </div>
+        <table id="fundTable">
+            <thead>
+                <tr>
+                    <th>基金信息</th>
+                    <th>溢价率</th>
+                    <th>限购值</th>
+                </tr>
+            </thead>
+            <tbody id="fundTableBody">
+                <!-- 数据将通过 JavaScript 动态填充 -->
+            </tbody>
+        </table>
     </div>
 
     <script src="data.js"></script>
